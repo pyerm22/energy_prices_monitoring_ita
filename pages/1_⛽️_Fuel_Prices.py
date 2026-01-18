@@ -33,6 +33,9 @@ def get_fuel_prices() -> pd.DataFrame:
 
 fuel_prices = get_fuel_prices()
 
+st.write("Columns:", list(fuel_prices.columns))
+st.dataframe(fuel_prices.head())
+
 if "target_selected" not in st.session_state:
     st.session_state.target_selected = False
 if "experiment_name" not in st.session_state:
