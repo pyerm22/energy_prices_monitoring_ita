@@ -1,7 +1,9 @@
-streamlit==1.27
-numpy
-pandas
+mlflow==2.7.1
+numpy<2
+pandas<3
 plotly
+prophet==1.1.4
 psutil
+streamlit==1.31.0
 yfinance==0.2.30
 
