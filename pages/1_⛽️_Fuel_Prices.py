@@ -31,11 +31,13 @@ def get_fuel_prices() -> pd.DataFrame:
     fuel_prices=fp.get_data()
     return fuel_prices
 
-fuel_prices = get_fuel_prices()
+# Normalize column names
+fuel_prices.columns = fuel_prices.columns.astype(str).str.strip().str.upper()
 
-fuel_prices.columns = fuel_prices.columns.str.strip().str.upper()
+# Quick debug (temporary): show available columns
+st.write("Fuel columns:", list(fuel_prices.columns))
 
-if "target_selected" not in st.session_state:
+if "target_selected" not in st.session_state: 
     st.session_state.target_selected = False
 if "experiment_name" not in st.session_state:
     st.session_state.experiment_name = None
@@ -102,21 +104,60 @@ with st.expander(label='Fuel Prices Data'):
 
 if "predictions" not in st.session_state:
     with st.container():
+
+        # --- Normalize column names (robust to casing/spaces) ---
+        fuel_prices.columns = fuel_prices.columns.astype(str).str.strip().str.upper()
+
+        # --- Debug: show available columns so we can map them (you can remove later) ---
+        st.caption(f"Available columns in fuel_prices: {list(fuel_prices.columns)}")
+
         if not st.session_state["target_selected"]:
-            fig = px.line(
-                data_frame=fuel_prices,
-                y=[fuel_prices["BENZINA"], fuel_prices["DIESEL"], fuel_prices["GPL"]],
-                title="Andamento storico dei prezzi dei carburanti"
-            )
-            st.plotly_chart(fig)
-            st.write("Puoi selezionare i dati di un carburante per addestrare un modello e effettuare previsioni")
+
+            # We try to plot the typical columns, but only if they exist
+            wanted = ["BENZINA", "DIESEL", "GPL"]
+            available = [c for c in wanted if c in fuel_prices.columns]
+            missing = [c for c in wanted if c not in fuel_prices.columns]
+
+            if missing:
+                st.warning(
+                    f"Missing expected columns: {missing}. "
+                    "I will plot the ones that exist. "
+                    "Use the list above to adjust mapping if needed."
+                )
+
+            if available:
+                fig = px.line(
+                    data_frame=fuel_prices,
+                    y=available,  # <-- IMPORTANT: pass column names, not Series
+                    title="Andamento storico dei prezzi dei carburanti"
+                )
+                st.plotly_chart(fig, use_container_width=True)
+                st.write(
+                    "Puoi selezionare i dati di un carburante per addestrare un modello e effettuare previsioni"
+                )
+            else:
+                st.error(
+                    "None of the expected columns (BENZINA, DIESEL, GPL) were found. "
+                    "Check the 'Available columns' list above and update the column names accordingly."
+                )
+
         else:
-            fig = px.line(
-                data_frame=fuel_prices,
-                y=st.session_state["target_col"],
-                title=f'Andamento storico dei prezzi {st.session_state["target_col"]} (€/lt)'
-            )
-            st.plotly_chart(fig)
+            # If target was selected earlier, make sure it matches normalized column names
+            target_col = str(st.session_state["target_col"]).strip().upper()
+
+            if target_col not in fuel_prices.columns:
+                st.error(
+                    f"Selected target '{st.session_state['target_col']}' not found after normalization. "
+                    f"Available columns: {list(fuel_prices.columns)}"
+                )
+            else:
+                fig = px.line(
+                    data_frame=fuel_prices,
+                    y=target_col,
+                    title=f"Andamento storico dei prezzi {target_col} (€/lt)"
+                )
+                st.plotly_chart(fig, use_container_width=True)
+
 else: 
     with st.container():
         if not st.session_state["keep_in_sample_forecast"]:
