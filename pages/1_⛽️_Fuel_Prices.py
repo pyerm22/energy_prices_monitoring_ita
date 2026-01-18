@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from prophet.plot import plot_plotly, plot_components_plotly
+# from prophet.plot import plot_plotly, plot_components_plotly
 
 
 from epm.models.prophet.forecaster import Forecaster
