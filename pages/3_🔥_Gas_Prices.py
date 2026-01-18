@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 
-# from prophet.plot import plot_plotly, plot_components_plotly
+from prophet.plot import plot_plotly, plot_components_plotly
 
 
 from epm.models.prophet.forecaster import Forecaster
