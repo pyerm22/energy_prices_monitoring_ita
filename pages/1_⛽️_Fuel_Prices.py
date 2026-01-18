@@ -31,6 +31,9 @@ def get_fuel_prices() -> pd.DataFrame:
 # ✅ IMPORTANT: actually load the data
 fuel_prices = get_fuel_prices()
 
+st.write("fuel_prices shape:", fuel_prices.shape)
+st.write("fuel_prices head:", fuel_prices.head())
+
 # ✅ Normalize column names ONCE (avoid casing/space issues)
 fuel_prices.columns = fuel_prices.columns.astype(str).str.strip().str.upper()
 
