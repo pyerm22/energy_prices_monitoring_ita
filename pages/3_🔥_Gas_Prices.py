@@ -5,7 +5,7 @@ import streamlit as st
 from prophet import Prophet
 
 
-from Prophet.plot import plot_plotly, plot_components_plotly
+from prophet.plot import plot_plotly, plot_components_plotly
 
 
 from epm.models.prophet.forecaster import Forecaster
