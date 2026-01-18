@@ -1,9 +1,7 @@
-mlflow==2.7.1
+streamlit>=1.30
 numpy
 pandas
 plotly
-prophet==1.1.4
 psutil
-sqlite
-streamlit==1.27
 yfinance==0.2.30
+mlflow==2.7.1
