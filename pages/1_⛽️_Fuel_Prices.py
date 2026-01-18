@@ -2,6 +2,7 @@ import datetime
 import pandas as pd 
 import plotly.express as px
 import streamlit as st
+from prophet import Prophet
 
 from prophet.plot import plot_plotly, plot_components_plotly
 
